@@ -22,7 +22,7 @@ fetch("./texts.json")
 // checks the user typed character and displays accordingly
 const typeController = (e) => {
   const newLetter = e.key;
-
+  
   // Handle backspace press
   if (newLetter == "Backspace") {
     userText = userText.slice(0, userText.length - 1);
@@ -39,7 +39,6 @@ const typeController = (e) => {
   }
 
   userText += newLetter;
-
   const newLetterCorrect = validate(newLetter);
 
   if (newLetterCorrect) {
@@ -47,7 +46,6 @@ const typeController = (e) => {
   } else {
     display.innerHTML += `<span class="red">${newLetter === " " ? "▪" : newLetter}</span>`;
   }
-
   // check if given question text is equal to user typed text
   if (questionText === userText) {
     gameOver();
@@ -65,6 +63,7 @@ const validate = (key) => {
 // FINISHED TYPING
 const gameOver = () => {
   document.removeEventListener("keydown", typeController);
+  
   // the current time is the finish time
   // so total time taken is current time - start time
   const finishTime = new Date().getTime();
@@ -84,9 +83,10 @@ const gameOver = () => {
     <h1>Finished!</h1>
     <p>You took: <span class="bold">${convertSecondMinute(timeTaken)}</span></p>
     <p>You made <span class="bold red">${errorCount}</span> mistakes</p>
+    <p>Words per second <span class="bold red">${wordPerMinute(questionText,timeTaken)}</span></p>
     <button onclick="closeModal()">Close</button>
   `;
-
+  
   addHistory(questionText, timeTaken, errorCount);
 
   // restart everything
@@ -104,6 +104,11 @@ const convertSecondMinute = (timeTaken) => {
     seconds = parseInt(timeTaken) + ' ' + 'seconds'
     return seconds
   }
+}
+
+const wordPerMinute = (questionText,timeTaken) => {
+  wpm = (questionText.length/parseInt(timeTaken)).toFixed(2)
+  return wpm
 }
 
 const closeModal = () => {
@@ -149,3 +154,4 @@ setInterval(() => {
 
   document.getElementById("show-time").innerHTML = `${startTime ? convertSecondMinute(timeSpent) : '0 seconds'}`;
 }, 1000);
+
