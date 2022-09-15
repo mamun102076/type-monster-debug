@@ -78,10 +78,11 @@ const gameOver = () => {
   display.innerHTML = "";
   // make it inactive
   display.classList.add("inactive");
+
   // show result
   resultModal.innerHTML += `
     <h1>Finished!</h1>
-    <p>You took: <span class="bold">${parseInt(timeTaken)}</span> seconds</p>
+    <p>You took: <span class="bold">${convertSecondMinute(timeTaken)}</span></p>
     <p>You made <span class="bold red">${errorCount}</span> mistakes</p>
     <button onclick="closeModal()">Close</button>
   `;
@@ -94,6 +95,16 @@ const gameOver = () => {
   userText = "";
   display.classList.add("inactive");
 };
+
+const convertSecondMinute = (timeTaken) => {
+  if (parseInt(timeTaken) >= 60) {
+    minutes = (parseInt(timeTaken) / 60).toFixed(2) + ' ' + 'minutes'
+    return minutes
+  } else {
+    seconds = parseInt(timeTaken) + ' ' + 'seconds'
+    return seconds
+  }
+}
 
 const closeModal = () => {
   modalBackground.classList.toggle("hidden");
@@ -109,16 +120,16 @@ const start = () => {
 
   const startCountdown = setInterval(() => {
     countdownOverlay.innerHTML = `<h1>${count}</h1>`;
-
     // finished timer
-    if (count == 0) {
+    if (count == -1) {
       // -------------- START TYPING -----------------
       document.addEventListener("keydown", typeController);
       countdownOverlay.style.display = "none";
       display.classList.remove("inactive");
-
+      countdownOverlay.innerHTML = ''
       clearInterval(startCountdown);
-      startTime = new Date().getTime();
+      startTime = new Date().getTime(); 
+      
     }
     count--;
   }, 1000);
@@ -136,5 +147,5 @@ setInterval(() => {
   const timeSpent = (currentTime - startTime) / 1000;
 
 
-  document.getElementById("show-time").innerHTML = `${startTime ? parseInt(timeSpent) : 0} seconds`;
+  document.getElementById("show-time").innerHTML = `${startTime ? convertSecondMinute(timeSpent) : '0 seconds'}`;
 }, 1000);
